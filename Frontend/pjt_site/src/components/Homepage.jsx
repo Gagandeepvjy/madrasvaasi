@@ -202,9 +202,9 @@ const Homepage = () => {
             </Link>
           <div className='relative group' onBlur={closeDropdown} tabIndex="0">
             <div className="flex items-center space-x-2 cursor-pointer" onClick={toggleDropdown}>
-              <img src={search} className='w-[35px]'></img>
-              <input type="text" className="bg-bottom w-[200px] " style={{ backgroundColor: 'transparent', backgroundImage: `URL(${line})`, backgroundRepeat: "no-repeat" }} />
-              <button className="focus:outline-none">
+              {/* <img src={search} className='w-[35px]'></img>
+              <input type="text" className="bg-bottom w-[200px] " style={{ backgroundColor: 'transparent', backgroundImage: `URL(${line})`, backgroundRepeat: "no-repeat" }} /> */}
+              <button className="focus:outline-none mt-[-1rem]">
                 <img src={m} alt="Profile" />
               </button>
             </div>
@@ -214,7 +214,7 @@ const Homepage = () => {
                   <span className="text-lg font-semibold">Welcome!</span>
                 </div>
                 <hr className="border-t border-purple-800" />
-                <Link to="/signup" className="block px-4 py-2 text-purple-800 hover:bg-purple-200" onClick={(e) => e.stopPropagation()}>
+                <Link to="/signup" className="block px-3 py-2 text-purple-800 hover:bg-purple-200" onClick={(e) => e.stopPropagation()}>
                   Sign Up
                 </Link>
                 <Link to="/login" className="block px-4 py-2 text-purple-800 hover:bg-purple-200" onClick={(e) => e.stopPropagation()}>
