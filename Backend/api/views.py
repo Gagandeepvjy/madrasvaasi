@@ -10,9 +10,12 @@ from django.contrib.auth import authenticate
 from rest_framework import generics, permissions
 from .models import ForumPost, Comment
 from .serializers import ForumPostSerializer, CommentSerializer
-from .models import Event, MonthEvent
-from .serializers import EventSerializer, MonthEventSerializer
+from .models import Event
+from .serializers import EventSerializer
 from .permissions import IsOwnerOrReadOnly
+import csv
+from .models import Event
+from datetime import datetime
 
 @csrf_exempt
 def signup(request):
@@ -83,12 +86,40 @@ class CommentRetrieveDestroy(generics.RetrieveUpdateDestroyAPIView):
 #Events
 
 
-class MonthEventsView(generics.ListAPIView):
-    serializer_class = MonthEventSerializer
-    queryset = MonthEvent.objects.all()
-    permission_classes = [permissions.IsAuthenticated]
-
-class DisplayEventView(generics.RetrieveAPIView):
-    serializer_class = EventSerializer
+class EventListAPIView(generics.ListAPIView):
     queryset = Event.objects.all()
-    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = EventSerializer
+
+
+
+def import_events_from_csv(request):
+    with open('C:/Users/sriva/madrasvaasi/Backend/event_data.csv') as file:
+        csv_reader = csv.DictReader(file)
+        #next(csv_reader)
+        for row in csv_reader:
+            # date = row['Date']
+            # print(date)
+            # date_parts = [part.strip() for part in date.split('-')]
+            # print(date_parts)
+            # start_date = datetime.strptime(date_parts[0], "%a %d %b %Y").strftime("%Y-%m-%d")
+            # end_date = datetime.strptime(date_parts[1], "%a %d %b %Y").strftime("%Y-%m-%d")
+            date = row.get('Date', '')  # Use get() to handle missing 'Date' key
+            date_parts = [part.strip() for part in date.split('-')] if date else []
+
+            if date_parts:
+                try:
+                    start_date = datetime.strptime(date_parts[0], "%a %d %b %Y").strftime("%Y-%m-%d")
+                    end_date = datetime.strptime(date_parts[-1], "%a %d %b %Y").strftime("%Y-%m-%d")
+                except ValueError as e:
+                    print(f"Error parsing date for row {row}: {e}")
+                    start_date = end_date = None
+            Event.objects.create(
+                Event_Title=row['Event Title'],
+                Event_Link=row['Event Link'],
+                Event_Details=row['Event Details'],
+                start_date=start_date,
+                end_date=end_date,
+                Location=row['Location'],
+                Image_Source=row['Image Source']
+            )
+    return JsonResponse({'message': 'Events imported successfully'})

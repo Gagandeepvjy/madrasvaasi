@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import ForumPost, Comment, MonthEvent, Event, Location
+from .models import ForumPost, Comment, Event, Location
 
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -50,14 +50,10 @@ class ForumPostSerializer(serializers.ModelSerializer):
 
         return instance
 
-class MonthEventSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = MonthEvent
-        fields = ('id', 'name')
+# serializers.py
 
 class EventSerializer(serializers.ModelSerializer):
-    month = MonthEventSerializer()
-
     class Meta:
         model = Event
-        fields = ('id', 'month', 'name', 'description', 'date')
+        fields = ['Event_Title', 'Event_Link', 'Event_Details', 'start_date','end_date', 'Location', 'Image_Source']
+

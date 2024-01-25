@@ -14,7 +14,7 @@ urlpatterns = [
     path("api/forum/location/<int:location_id>/<int:post_id>/<int:id>",views.CommentRetrieveDestroy.as_view()),
 
     #Events
-    path("api/events/month",views.MonthEventsView.as_view()),
-    path("api/events/month/<int:pk>",views.DisplayEventView.as_view())
+    path('import-csv/', views.import_events_from_csv, name='import_csv'),
+    path('api/events/', views.EventListAPIView.as_view(), name='event_list_api'),
 
 ]

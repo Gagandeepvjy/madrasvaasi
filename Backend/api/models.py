@@ -26,18 +26,34 @@ class Comment(models.Model):
     def __str__(self):
         return f"Comment by {self.user.username} on {self.post.title}"
 
-class MonthEvent(models.Model):
-    name = models.CharField(max_length=255)
-    description = models.TextField()
+# class MonthEvent(models.Model):
+#     name = models.CharField(max_length=255)
+#     description = models.TextField()
 
-    def __str__(self):
-        return self.name
+#     def __str__(self):
+#         return self.name
+
+# class Event(models.Model):
+#     month = models.ForeignKey(MonthEvent, on_delete=models.CASCADE)
+#     name = models.CharField(max_length=255)
+#     description = models.TextField()
+#     date = models.DateField()
+
+#     def __str__(self):
+#         return self.name
+    
+
+#Event Title,Event Link,Event Details,Date,Location,Image Source
 
 class Event(models.Model):
-    month = models.ForeignKey(MonthEvent, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
-    description = models.TextField()
-    date = models.DateField()
+    Event_Title = models.CharField(max_length=255)
+    Event_Link = models.URLField()
+    Event_Details = models.CharField(max_length=255)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    Location = models.CharField(max_length=255)
+    Image_Source = models.URLField()
 
     def __str__(self):
-        return self.name
+        return self.Event_Title
+    
