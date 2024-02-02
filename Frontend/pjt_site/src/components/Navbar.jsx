@@ -36,7 +36,7 @@ const Navbar = () => {
               {/* <img src={search} className='w-[35px]'></img>
               <input type="text" className="bg-bottom w-[200px] " style={{ backgroundColor: 'transparent', backgroundImage: `URL(${line})`, backgroundRepeat: "no-repeat" }} /> */}
               <button className="focus:outline-none mt-[-1rem]">
-                <img src={m} alt="Profile" />
+                <img src={m} alt="Profile" style={{position: "relative", left: "650%"}} />
               </button>
             </div>
             {isDropdownOpen && (

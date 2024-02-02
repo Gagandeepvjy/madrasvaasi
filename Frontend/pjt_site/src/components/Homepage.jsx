@@ -168,7 +168,7 @@ import React, { useState } from 'react';
 // import search from '../assets/Search.svg';
 // import m from '../assets/m.svg';
 // import line from '../assets/Line.svg';
-import bgland from '../assets/bg.svg';
+import bgland from '../assets/pic1.png';
 import Navbar from './Navbar';
 
 const Homepage = () => {

@@ -1,0 +1,11 @@
+/* styles.css */
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    display: none;
+  }
+  
