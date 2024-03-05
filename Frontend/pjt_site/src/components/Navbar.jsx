@@ -40,7 +40,7 @@ const Navbar = () => {
               </button>
             </div>
             {isDropdownOpen && (
-              <div className="absolute top-full right-0 mt-2 bg-white border border-purple-800 rounded shadow-md overflow-hidden">
+              <div className="absolute top-full left-[600%] mt-2 bg-white border border-purple-800 rounded shadow-md overflow-hidden">
                 <div className="px-4 py-2 bg-purple-800 text-white">
                   <span className="text-lg font-semibold">Welcome!</span>
                 </div>
