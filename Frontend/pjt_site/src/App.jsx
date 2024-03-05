@@ -17,6 +17,7 @@ import Homepage from './components/Homepage';
 import Signup from './components/signup';
 import Login from './components/login';
 import Events from './components/Events';
+import Forum from './components/Forum';
 const App = () => {
   return (
     <Router>
@@ -24,6 +25,7 @@ const App = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/" element={<Homepage />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/forum" element={<Forum />} />
         <Route path="/events" element={<Events />} />
       </Routes>
     </Router>
