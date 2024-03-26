@@ -52,15 +52,21 @@ import Navbar from './Navbar'; // Import your Navbar component
 import axios from 'axios';
 import './style.css';
 import bgevents from '../assets/pic2.jpg'
+import { useAuth } from '../AuthContext';
 
 const Events = () => {
   const [events, setEvents] = useState([]);
+  const { token } = useAuth()
 
   useEffect(() => {
     // Fetch data from Django API when the component mounts
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/events/');
+        const response = await axios.get('http://127.0.0.1:8000/api/events/', {
+          headers: {
+            Authorization: `Bearer ${token}` // Set Authorization header with Bearer token
+          }
+        });
         setEvents(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);

@@ -31,29 +31,25 @@ const Navbar = () => {
             <Link to="/help">
                 HELP
             </Link>
-          <div className='relative group' onBlur={closeDropdown} tabIndex="0">
-            <div className="flex items-center space-x-2 cursor-pointer" onClick={toggleDropdown}>
-              {/* <img src={search} className='w-[35px]'></img>
-              <input type="text" className="bg-bottom w-[200px] " style={{ backgroundColor: 'transparent', backgroundImage: `URL(${line})`, backgroundRepeat: "no-repeat" }} /> */}
-              <button className="focus:outline-none mt-[-1rem]">
-                <img src={m} alt="Profile" style={{position: "relative", left: "650%"}} />
-              </button>
-            </div>
-            {isDropdownOpen && (
-              <div className="absolute top-full left-[600%] mt-2 bg-white border border-purple-800 rounded shadow-md overflow-hidden">
-                <div className="px-4 py-2 bg-purple-800 text-white">
-                  <span className="text-lg font-semibold">Welcome!</span>
-                </div>
-                <hr className="border-t border-purple-800" />
-                <Link to="/signup" className="block px-3 py-2 text-purple-800 hover:bg-purple-200" onClick={(e) => e.stopPropagation()}>
-                  Sign Up
-                </Link>
-                <Link to="/login" className="block px-4 py-2 text-purple-800 hover:bg-purple-200" onClick={(e) => e.stopPropagation()}>
-                  Login
-                </Link>
-              </div>
-            )}
+            <div className="relative">
+          <div className="cursor-pointer" onClick={toggleDropdown}>
+          <button className="focus:outline-none mt-[-1rem]">
+      <img src={m} alt="Profile" style={{ position: "relative", left: "600%" }} />
+    </button>
           </div>
+          {isDropdownOpen && (
+            <div className="absolute left-[580%] right-0 mt-2 bg-white rounded shadow-md">
+            <ul className="py-1">
+              <li>
+                <Link to="/signup" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Signup</Link>
+              </li>
+              <li>
+                <Link to="/login" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Login</Link>
+              </li>
+            </ul>
+          </div>
+          )}
+        </div>
         </nav>
       </div>
   )

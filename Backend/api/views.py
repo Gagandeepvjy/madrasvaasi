@@ -8,90 +8,84 @@ from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from rest_framework import generics, permissions
+from rest_framework.response import Response
 from .models import ForumPost, Comment
-from .serializers import ForumPostSerializer, CommentSerializer
+#from .serializers import ForumPostSerializer, CommentSerializer , LocationSerializer
 from .models import Event
 from .serializers import EventSerializer
 from .permissions import IsOwnerOrReadOnly
 import csv
-from .models import Event
+from .models import Event,Location
 from datetime import datetime
 
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes
+from rest_framework_simplejwt.tokens import RefreshToken
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+from rest_framework.decorators import api_view
+
 @csrf_exempt
+@swagger_auto_schema(method='post', request_body=openapi.Schema(
+    type=openapi.TYPE_OBJECT,
+    required=['username', 'password'],
+    properties={
+        'username': openapi.Schema(type=openapi.TYPE_STRING),
+        'password': openapi.Schema(type=openapi.TYPE_STRING)
+    }
+))
+@api_view(['POST'])
 def signup(request):
     if request.method == 'POST':
         try:
             data = JSONParser().parse(request)
             user = User.objects.create_user(data['username'], password=data['password'])
             user.save()
-            token, created = Token.objects.get_or_create(user=user)
-            return JsonResponse({'token': str(token)}, status=201)
+            refresh = RefreshToken.for_user(user)
+            return JsonResponse({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+            }, status=status.HTTP_201_CREATED)
         except IntegrityError:
-            return JsonResponse({'error': 'That username has already been taken. Please choose a new username'}, status=400)
+            return JsonResponse({'error': 'That username has already been taken. Please choose a new username'}, status=status.HTTP_400_BAD_REQUEST)
     else:
-        return JsonResponse({'error': 'Method not allowed'}, status=405)
+        return JsonResponse({'error': 'Method not allowed'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
 
 @csrf_exempt
+@swagger_auto_schema(method='post', request_body=openapi.Schema(
+    type=openapi.TYPE_OBJECT,
+    required=['username', 'password'],
+    properties={
+        'username': openapi.Schema(type=openapi.TYPE_STRING),
+        'password': openapi.Schema(type=openapi.TYPE_STRING)
+    }
+))
+@api_view(['POST'])
 def login(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
         user = authenticate(request, username=data['username'], password=data['password'])
         if user is None:
-            return JsonResponse({'error':'Could not login. Please check username and password'}, status=400)
+            return JsonResponse({'error':'Could not login. Please check username and password'}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            try:
-                token = Token.objects.get(user=user)
-            except:
-                token = Token.objects.create(user=user)
-            return JsonResponse({'token':str(token)}, status=200)
-
-
-class LocationPostsView(generics.ListAPIView):
-    serializer_class = ForumPostSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        location_id = self.kwargs.get('pk')
-        return ForumPost.objects.filter(location__id=location_id)
-
-class CreatePost(generics.CreateAPIView):
-    serializer_class = ForumPostSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def perform_create(self, serializer):
-        location_id = self.kwargs.get('pk')
-        serializer.save(user=self.request.user, location_id=location_id)
-
-class PostRetrieveDestroy(generics.RetrieveUpdateDestroyAPIView):
-    queryset = ForumPost.objects.all()
-    serializer_class = ForumPostSerializer
-    permission_classes = [permissions.IsAuthenticated,IsOwnerOrReadOnly]
-    lookup_field = 'id'
-
-class CreateComment(generics.CreateAPIView):
-    serializer_class = CommentSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def perform_create(self, serializer):
-        post_id = self.kwargs.get('post_id')
-        serializer.save(user=self.request.user, post_id=post_id)
-
-class CommentRetrieveDestroy(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
-    permission_classes = [permissions.IsAuthenticated,IsOwnerOrReadOnly]
-    lookup_field = 'id'
-
+            refresh = RefreshToken.for_user(user)
+            return JsonResponse({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+            }, status=status.HTTP_200_OK)
+    else:
+        return JsonResponse({'error': 'Method not allowed'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 #Events
 
-
+@permission_classes([IsAuthenticated])
 class EventListAPIView(generics.ListAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
 
 
-
+@permission_classes([IsAuthenticated])
 def import_events_from_csv(request):
     with open('C:/Users/sriva/madrasvaasi/Backend/event_data.csv') as file:
         csv_reader = csv.DictReader(file)
@@ -123,3 +117,76 @@ def import_events_from_csv(request):
                 Image_Source=row['Image Source']
             )
     return JsonResponse({'message': 'Events imported successfully'})
+
+#forum
+
+from rest_framework import generics
+from rest_framework import status
+from rest_framework.response import Response
+from .models import Location, ForumPost, Comment
+from .serializers import LocationSerializer, PostSerializer, CommentSerializer
+from .serializers import LocationPostCountSerializer
+
+@permission_classes([IsAuthenticated])
+class LocationListView(generics.ListCreateAPIView):
+    queryset = Location.objects.all()
+    serializer_class = LocationSerializer
+
+@permission_classes([IsAuthenticated])
+class PostListView(generics.ListCreateAPIView):
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        location_id = self.kwargs['location_id']
+        return ForumPost.objects.filter(location_id=location_id)
+
+    def perform_create(self, serializer):
+        location_id = self.kwargs['location_id']
+        location = Location.objects.get(id=location_id)
+        serializer.save(location=location)
+
+@permission_classes([IsAuthenticated])
+class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ForumPost.objects.all()
+    serializer_class = PostSerializer
+    lookup_url_kwarg = 'post_id'  # Set the URL parameter name for the post ID
+
+    def get_queryset(self):
+        location_id = self.kwargs['location_id']
+        return self.queryset.filter(location_id=location_id)
+
+@permission_classes([IsAuthenticated])
+class CommentListView(generics.ListCreateAPIView):
+    serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        post_id = self.kwargs['post_id']
+        return Comment.objects.filter(post_id=post_id)
+
+    def perform_create(self, serializer):
+        post_id = self.kwargs['post_id']
+        post = ForumPost.objects.get(id=post_id)
+        serializer.save(post=post)
+
+@permission_classes([IsAuthenticated])
+class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['location_id'] = self.get_object().post.location.id
+        return context
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .models import Location
+from .serializers import LocationPostCountSerializer
+
+@permission_classes([IsAuthenticated])
+class LocationPostCountView(APIView):
+    def get(self, request, location_id):
+        location = Location.objects.get(id=location_id)
+        serializer = LocationPostCountSerializer(location)
+        return Response(serializer.data)
+
+
