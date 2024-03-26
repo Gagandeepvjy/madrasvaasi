@@ -44,6 +44,7 @@ import Login from './components/login';
 import Events from './components/Events';
 import Forum from './components/Forum';
 import PrivateRoute from './PrivateRoute'
+import Tourism from './components/Tourism';
 
 const App = () => {
   return (
@@ -53,10 +54,9 @@ const App = () => {
           <Route path="/signup" element={<Signup />} />
           <Route path="/" element={<Homepage />} />
           <Route path="/login" element={<Login />} />
-          
           <Route element={<PrivateRoute/>}>
+            <Route path='/tourism' element={<Tourism/>}/>
             <Route path='/forum' element={<Forum/>}/>
-  
             <Route path='/events' element={<Events/>}/>
           </Route>
           </Routes>

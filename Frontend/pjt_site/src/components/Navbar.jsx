@@ -28,8 +28,8 @@ const Navbar = () => {
             <Link to="/about">
                 ABOUT
             </Link>
-            <Link to="/help">
-                HELP
+            <Link to="/tourism">
+                TOURISM
             </Link>
             <div className="relative">
           <div className="cursor-pointer" onClick={toggleDropdown}>
