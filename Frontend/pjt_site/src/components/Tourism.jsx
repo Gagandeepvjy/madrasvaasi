@@ -5,9 +5,10 @@ import eventspage from '../assets/eventmenu.svg'
 import rect30 from '../assets/rect30.svg'
 import rect34 from '../assets/rect34.svg'
 import Slice1 from '../assets/Slice1.svg'
+import sm from '../assets/sm.svg'
 const Tourism = () => {
   return (
-    <div className='outer-bg min-h-screen overflow-hidden'>
+    <div className='outer-bg min-h-screen'>
         <div className="bg-cover bg-center bg-gradient-to-r from-purple-900 to-indigo-800 pb-20" style={{ backgroundImage: `URL(${touris})`, backgroundRepeat: "no-repeat" }}>
             <Navbar/>
             <div className="text-white text-[40px] pl-[4rem] pt-[2rem] font-extrabold font-['League Spartan']">EXPLORE FROM POPULAR EXPERIENCES</div>
@@ -90,9 +91,9 @@ const Tourism = () => {
                   </div>
                 </div>
             </div>
-            <div>
-              <a>
-                See More
+            <div className="pt-[5rem] flex justify-end pr-[4rem]">
+              <a href="/tourism_seemore" className="">
+                <img src = {sm}/>
               </a>
             </div>
         </div>
